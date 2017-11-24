@@ -1,0 +1,104 @@
+docker-machine create -d virtualbox mh-keystore
+eval "$(docker-machine env mh-keystore)"
+docker run -d \
+  --name consul \
+  -p "8500:8500" \
+  -h "consul" \
+  consul agent -server -bootstrap -client "0.0.0.0"
+
+docker ps
+
+docker-machine create \
+-d virtualbox \
+--swarm --swarm-master \
+--swarm-discovery="consul://$(docker-machine ip mh-keystore):8500" \
+--engine-opt="cluster-store=consul://$(docker-machine ip mh-keystore):8500" \
+--engine-opt="cluster-advertise=eth1:2376" \
+mhs-demo0
+
+docker-machine create -d virtualbox \
+  --swarm \
+  --swarm-discovery="consul://$(docker-machine ip mh-keystore):8500" \
+  --engine-opt="cluster-store=consul://$(docker-machine ip mh-keystore):8500" \
+  --engine-opt="cluster-advertise=eth1:2376" \
+  mhs-demo1
+
+ docker-machine ls
+ eval $(docker-machine env --swarm mhs-demo0)
+ docker info
+ docker network create --driver overlay --subnet=10.0.9.0/24 my-net
+ docker network ls
+ docker run -itd \
+  --name=web \
+  --network=my-net \
+  --env="constraint:node==mhs-demo0" \
+  nginx:alpine
+
+  docker run -it --rm \
+  --network=my-net \
+  --env="constraint:node==mhs-demo1" \
+  busybox wget -O- http://web
+
+docker run --rm -it -e CORE_VM_ENDPOINT=http://172.17.0.1:2375 -e CORE_PEER_ID=vp1 -e CORE_PEER_ADDRESSAUTODETECT=true -e CORE_PEER_DISCOVERY_ROOTNODE=172.17.0.2:30303 hyperledger/fabric-peer peer node start
+
+--------------------------
+docker run --rm -it -e CORE_VM_ENDPOINT=unix:///var/run/docker.sock -e CORE_PEER_ID=vp1 -e CORE_PEER_ADDRESSAUTODETECT=true -e CORE_PEER_DISCOVERY_ROOTNODE=192.168.99.100:7051 hyperledger/fabric-peer:x86_64-0.6.0-preview peer node start
+
+--------------------------
+
+ 
+$ cd $GOPATH/src/github.com/hyperledger/fabric/core/chaincode/shim/java
+$ gradle -b build.gradle clean
+Starting a Gradle Daemon (subsequent builds will be faster)
+:core:chaincode:shim:java:clean
+
+$ gradle -b build.gradle build
+:core:chaincode:shim:java:copyProtos UP-TO-DATE
+:core:chaincode:shim:java:extractIncludeProto
+:core:chaincode:shim:java:extractProto UP-TO-DATE
+:core:chaincode:shim:java:generateProto UP-TO-DATE
+:core:chaincode:shim:java:compileJava
+:core:chaincode:shim:java:processResources
+:core:chaincode:shim:java:classes
+:core:chaincode:shim:java:jar
+:core:chaincode:shim:java:assemble
+:core:chaincode:shim:java:extractIncludeTestProto
+:core:chaincode:shim:java:extractTestProto UP-TO-DATE
+:core:chaincode:shim:java:generateTestProto UP-TO-DATE
+:core:chaincode:shim:java:compileTestJava UP-TO-DATE
+:core:chaincode:shim:java:processTestResources UP-TO-DATE
+:core:chaincode:shim:java:testClasses UP-TO-DATE
+:core:chaincode:shim:java:test UP-TO-DATE
+:core:chaincode:shim:java:check UP-TO-DATE
+:core:chaincode:shim:java:build
+:core:chaincode:shim:java:copyToLib
+:core:chaincode:shim:java:generatePomFileForMavenJavaPublication
+:core:chaincode:shim:java:publishMavenJavaPublicationToMavenLocal
+:core:chaincode:shim:java:publishToMavenLocal
+ 
+BUILD SUCCESSFUL
+ 
+Total time: 4.521 secs
+
+$ export GOPATH=/c/IAD/mychaincode
+$ cd $GOPATH
+$ git clone https://github.com/makotogo/ChaincodeTutorial.git
+Cloning into 'ChaincodeTutorial'...
+remote: Counting objects: 133, done.
+remote: Compressing objects: 100% (90/90), done.
+remote: Total 133 (delta 16), reused 118 (delta 1), pack-reused 0
+Receiving objects: 100% (133/133), 9.39 MiB | 1.95 MiB/s, done.
+Resolving deltas: 100% (16/16), done.
+$ cd ChaincodeTutorial
+$ pwd
+/c/IAD/mychaincode/ChaincodeTutorial
+
+$ ./ChaincodeTutorial/bin/ChaincodeTutorial
+Feb 28, 2017 4:18:16 PM org.hyperledger.java.shim.ChaincodeBase newPeerClientConnection
+INFO: Inside newPeerCLientConnection
+Feb 28, 2017 4:18:16 PM io.grpc.internal.TransportSet$1 call
+INFO: Created transport io.grpc.netty.NettyClientTransport@10bf86d3(/127.0.0.1:7051) for /127.0.0.1:7051
+Feb 28, 2017 4:18:21 PM io.grpc.internal.TransportSet$TransportListener transportReady
+INFO: Transport io.grpc.netty.NettyClientTransport@10bf86d3(/127.0.0.1:7051) for /127.0.0.1:7051 is ready
+
+https://svn.aciworldwide.com/repos-aci/INDIA_IAD/trunk/INDIA IAD 2017/
