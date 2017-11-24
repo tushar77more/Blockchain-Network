@@ -102,3 +102,20 @@ Feb 28, 2017 4:18:21 PM io.grpc.internal.TransportSet$TransportListener transpor
 INFO: Transport io.grpc.netty.NettyClientTransport@10bf86d3(/127.0.0.1:7051) for /127.0.0.1:7051 is ready
 
 https://svn.aciworldwide.com/repos-aci/INDIA_IAD/trunk/INDIA IAD 2017/
+
+
+echo "# Blockchain" >> README.md
+git init
+git add README.md
+git commit -m "first commit"
+git remote add origin https://github.com/tushar77more/Blockchain.git
+git push -u origin master
+
+https://hyperledger-fabric.readthedocs.io/en/release/
+https://www.youtube.com/watch?v=MPNkUqOKhVE
+https://github.com/hyperledger/fabric/tree/v0.6
+https://services.gradle.org/distributions/
+https://stackoverflow.com/questions/43928542/unable-to-register-chaincode-successfully-start-blockchain-network
+https://stackoverflow.com/questions/42973954/soap-ui-errorjava-net-socketexception-connection-reset
+https://www.soapui.org/downloads/soapui/soapui-os-older-versions.html
+https://docs.docker.com/engine/userguide/networking/overlay-standalone-swarm/#run-an-application-on-your-network
